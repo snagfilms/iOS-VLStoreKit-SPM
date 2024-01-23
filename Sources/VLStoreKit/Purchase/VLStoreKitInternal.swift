@@ -219,35 +219,28 @@ final class VLStoreKitInternal:APIService , VLBeaconEventProtocols{
 }
 
 extension VLStoreKitInternal {
-    private func setupConfiguration() {
-		if let apiUrl = self.getBaseUrl() {
-			self.apiUrl = apiUrl
-		}
-		else {
-			var filePath:String?
-			let classBundle = Bundle(for: type(of: self))
-			if let classBundlePath = classBundle.path(forResource: "VLStoreKitLib", ofType: "bundle"), let bundle = Bundle(path: classBundlePath) {
-				filePath = bundle.path(forResource: "Configuration", ofType: "plist")
-			}
-			if filePath == nil {
-				guard let bundle = Bundle(identifier: bundleIdentifier) else {
-					return
-				}
-				filePath = bundle.path(forResource: "Configuration", ofType: "plist")
-			}
-			
-			guard let filePath else { return }
-			if let configData = try? Data(contentsOf: URL(fileURLWithPath: filePath)), let configuration = try? PropertyListDecoder().decode(VLConfiguration.self, from: configData),
-			   let apiUrl = configuration.apiUrl {
-				self.apiUrl = apiUrl
-			}
-		}
+    public func setupConfiguration() {
+        if (self.apiUrl ?? "").isEmpty {
+            self.apiUrl = self.getBaseUrl()
+        }
     }
 	
-	private func getBaseUrl() -> String? {
-		guard let bundlePath = Bundle.main.path(forResource: "SiteConfig", ofType: "plist"),
-			  let dict = NSDictionary.init(contentsOfFile: bundlePath),
-			  let apiEndpoint = dict["APIEndPoint"] as? String else {return nil}
-		return apiEndpoint
-	}
+    private func getBaseUrl() -> String? {
+        guard let bundlePath = Bundle.main.path(forResource: "SiteConfig", ofType: "plist") else {
+            assertionFailure("Failed to find SiteConfig.plist in the main bundle.")
+            return nil
+        }
+        
+        guard let dict = NSDictionary(contentsOfFile: bundlePath) else {
+            assertionFailure("Failed to create NSDictionary from SiteConfig.plist.")
+            return nil
+        }
+        
+        guard let apiEndpoint = dict["APIEndPoint"] as? String else {
+            assertionFailure("APIEndPoint key not found or is not a String in SiteConfig.plist.")
+            return nil
+        }
+        
+        return apiEndpoint
+    }
 }
