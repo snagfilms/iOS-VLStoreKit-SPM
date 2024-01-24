@@ -255,9 +255,12 @@ final public class VLStoreKit:NSObject {
      - apiKey: API key provided from Viewlift Dashboard
      - authorizationToken: Token provided from Viewlift Dashboard
      */
-    public static func setupConfig(apiKey:String, authorizationToken:String) {
+    public static func setupConfig(apiKey:String, authorizationToken:String, apiBaseUrl: String? = nil) {
+        VLStoreKitInternal.shared.apiUrl = apiBaseUrl
         VLStoreKitInternal.shared.apiKey = apiKey
         VLStoreKitInternal.shared.authorizationToken = authorizationToken
+        
+        VLStoreKitInternal.shared.setupConfiguration()
     }
     
     /**
