@@ -22,7 +22,7 @@ final public class VLStoreKit:NSObject {
     
     public var enableDebugLogs: Bool = false{
         didSet{
-            VLStoreKitBeaconHelper.getInstance().debugLogs = enableDebugLogs
+            VLStoreKitBeaconHelper.getInstance()?.debugLogs = enableDebugLogs
         }
     }
     public weak var storeKitDelegate:VLStoreKitDelegate? {
