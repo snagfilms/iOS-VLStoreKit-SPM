@@ -11,8 +11,8 @@ import VLBeaconLib
 class VLStoreKitBeaconHelper: NSObject {
     private static var _sharedInstance: VLBeacon?
     
-    class func getInstance() -> VLBeacon {
-        return _sharedInstance ?? VLBeacon.getInstance()
+    class func getInstance() -> VLBeacon? {
+        return _sharedInstance
     }
     
     class func setUpBecaonInstance(sharedBeaconInstance: VLBeacon?) {
