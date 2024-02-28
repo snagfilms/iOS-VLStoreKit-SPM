@@ -49,7 +49,7 @@ public extension JWT {
     ///
     /// ```swift
     /// if let email = jwt.claim(name: "email").string {
-    ///     print("Email is \(email)")
+    ///     VLStoreKitInternal.shared.logMessage("Email is \(email)")
     /// }
     /// ```
     ///
@@ -64,7 +64,7 @@ public extension JWT {
     ///
     /// ```swift
     /// if let email = jwt["email"].string {
-    ///     print("Email is \(email)")
+    ///     VLStoreKitInternal.shared.logMessage("Email is \(email)")
     /// }
     /// ```
     ///

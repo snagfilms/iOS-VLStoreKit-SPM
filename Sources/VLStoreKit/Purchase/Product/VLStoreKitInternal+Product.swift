@@ -8,7 +8,6 @@
 extension VLStoreKitInternal {
     internal func getRegionAndCurrencyCode(productIds: Set<String>, callback: @escaping ((_ regionCode:String?, _ currencyCode:String?) ->  Void)) {
         storeKitManager.fetchProductsFromAppStore(productIds: productIds) { listOfAvailableProducts in
-            print("entered")
             guard !listOfAvailableProducts.isEmpty else {
                 callback(nil, nil)
                 return

@@ -7,9 +7,10 @@
 
 import Foundation
 import StoreKit
+import os.log
 
 final class VLStoreKitInternal:APIService , VLBeaconEventProtocols{
-
+    
     enum Result<Success, Failure> where Failure : Error {
         /// A success, storing a `Success` value.
         case success(Success)
@@ -61,6 +62,10 @@ final class VLStoreKitInternal:APIService , VLBeaconEventProtocols{
     internal var storeCountryCode:String? = nil
     internal var isFromSubscriptionFlow = false
     lazy internal var transactionDetailsCallback:((_ storeKitModel:VLStoreKitModel?, _ error:TransactionError?) -> Void)? = nil
+    
+#if DEBUG
+    private let logger: OSLog = OSLog(subsystem: "com.viewlift.storekit", category: "storekit")
+#endif
     
     internal func initateTransaction(productDetails: VLProductDetails, transactionType:TransactionType = .purchase, deviceId:String? = nil, makeInternalSubscriptionCall:Bool = false, planId:String? = nil) {
         self.productDetails = productDetails
@@ -219,12 +224,13 @@ final class VLStoreKitInternal:APIService , VLBeaconEventProtocols{
 }
 
 extension VLStoreKitInternal {
+    
     public func setupConfiguration() {
         if (self.apiUrl ?? "").isEmpty {
             self.apiUrl = self.getBaseUrl()
         }
     }
-	
+    
     private func getBaseUrl() -> String? {
         guard let bundlePath = Bundle.main.path(forResource: "SiteConfig", ofType: "plist") else {
             assertionFailure("Failed to find SiteConfig.plist in the main bundle.")
@@ -243,4 +249,17 @@ extension VLStoreKitInternal {
         
         return apiEndpoint
     }
+}
+
+extension VLStoreKitInternal {
+    
+    func logMessage(_ message: String) {
+#if DEBUG
+        if VLStoreKit.sharedStoreKitManager.enableDebugLogs {
+            os_log("%@", log: logger, type: .info, "VLStoreKit Logger")
+            os_log("%@", log: logger, type: .info, message)
+        }
+#endif
+    }
+    
 }

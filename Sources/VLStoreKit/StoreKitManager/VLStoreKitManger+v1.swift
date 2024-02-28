@@ -62,14 +62,14 @@ extension VLStoreKitManager {
     //MARK: StoreKit Delegate methods
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction])
     {
-        print("TRANSACTION PROCESSING paymentQueue")
+        VLStoreKitInternal.shared.logMessage("TRANSACTION PROCESSING paymentQueue")
         if !isOnlyFetchingProductDetails {
             var isAllRestoreTransaction = true
             for transaction in transactions {
                 if transaction.transactionState == SKPaymentTransactionState.failed || transaction.transactionState == SKPaymentTransactionState.purchasing {
                     isAllRestoreTransaction = false
                     
-                    print("TRANSACTION PROCESSING paymentQueue failed")
+                    VLStoreKitInternal.shared.logMessage("TRANSACTION PROCESSING paymentQueue failed")
                     
                     break
                 }
@@ -89,13 +89,13 @@ extension VLStoreKitManager {
                 switch transaction.transactionState
                 {
                 case .purchasing:
-                    print("TRANSACTION PROCESSING paymentQueue purchasing")
+                    VLStoreKitInternal.shared.logMessage("TRANSACTION PROCESSING paymentQueue purchasing")
                     if storeKitDelegate != nil {
                         storeKitDelegate?.transactionInProcess()
                     }
                     break
                 case .purchased:
-                    print("TRANSACTION PROCESSING paymentQueue purchased")
+                    VLStoreKitInternal.shared.logMessage("TRANSACTION PROCESSING paymentQueue purchased")
                     var receiptData:NSData?
                     if let receiptURL = Bundle.main.appStoreReceiptURL {
                         receiptData = NSData(contentsOf:receiptURL)
@@ -108,12 +108,12 @@ extension VLStoreKitManager {
                     }
                     else {
                         if !checkingRestorePurchaseOnFirstLaunch && isFromSubscriptionFlow {
-                            print("TRANSACTION PURCHASED FINISHED CALLING")
+                            VLStoreKitInternal.shared.logMessage("TRANSACTION PURCHASED FINISHED CALLING")
                             SKPaymentQueue.default().finishTransaction(transaction)
                             self.isProductPurchased = true
                             
                             DispatchQueue.main.async {
-                                print("TRANSACTION PURCHASED CALLING DELEGATE")
+                                VLStoreKitInternal.shared.logMessage("TRANSACTION PURCHASED CALLING DELEGATE")
                                 self.getTransaction(transaction: transaction, andReceiptData: receiptData)
                             }
                         }
@@ -141,7 +141,7 @@ extension VLStoreKitManager {
                     }
                     break
                 case .failed:
-                    print("TRANSACTION PROCESSING paymentQueue failed1")
+                    VLStoreKitInternal.shared.logMessage("TRANSACTION PROCESSING paymentQueue failed1")
                     SKPaymentQueue.default().finishTransaction(transaction)
                     self.isProductPurchased = false
                     if !self.isFromSubscriptionFlow {
@@ -157,7 +157,7 @@ extension VLStoreKitManager {
                    
                     break
                 case .restored :
-                    print("TRANSACTION PROCESSING paymentQueue restored")
+                    VLStoreKitInternal.shared.logMessage("TRANSACTION PROCESSING paymentQueue restored")
                     if !isMakingPurchase {
                         let receiptURL:URL? = Bundle.main.appStoreReceiptURL
                         if receiptURL != nil && !self.isProductPurchased {
@@ -290,7 +290,7 @@ extension VLStoreKitManager {
             if transaction.transactionIdentifier != nil {
                 if storeKitDelegate != nil {
                     isFromSubscriptionFlow = false
-                    print("TRANSACTION PURCHASED CALLED DELEGATE")
+                    VLStoreKitInternal.shared.logMessage("TRANSACTION PURCHASED CALLED DELEGATE")
                     storeKitDelegate?.transactionFinished(storeKitModel: VLStoreKitModel(withTransactionId:transaction.transactionIdentifier, originalTransactionId: transaction.original?.transactionIdentifier, productId: transaction.payment.productIdentifier, transactionDate: transaction.transactionDate, transactionEndDate: nil, transactionReceipt: nil))
                 }
             }
@@ -425,7 +425,7 @@ extension VLStoreKitManager {
     }
     
     internal func finishInCompleteTransactions() {
-        print("Pending transactions count ----> \(SKPaymentQueue.default().transactions)")
+        VLStoreKitInternal.shared.logMessage("Pending transactions count ----> \(SKPaymentQueue.default().transactions)")
         finishTransactions(tranasctions: SKPaymentQueue.default().transactions)
     }
     

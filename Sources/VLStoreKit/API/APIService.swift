@@ -189,11 +189,9 @@ struct NetworkRequest {
                 urlRequest.httpBody = data
             }
         }
-
-        if VLStoreKit.sharedStoreKitManager.enableDebugLogs {
-            getCURLRequest(request: urlRequest)
-        }
-
+        
+        getCURLRequest(request: urlRequest)
+        
         URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
             if error == nil, let usableData = data {
                 responseForConfiguration(usableData, self.getSuccessStatus(response: response), (response as? HTTPURLResponse)?.statusCode)
@@ -221,7 +219,7 @@ struct NetworkRequest {
 	
 	
 	private func getCURLRequest(request: URLRequest) {
-//#if DEBUG
+#if DEBUG
 		var curlString = "VLStoreKitLib CURL REQUEST:\n"
 		curlString += "curl -X \(request.httpMethod!) \\\n"
 		
@@ -241,8 +239,8 @@ struct NetworkRequest {
 			}
 		}
 		
-		print(curlString)
-//#endif
+        VLStoreKitInternal.shared.logMessage(curlString)
+#endif
 	}
 	
 	private func escapeQuotesInString(str:String) -> String {
