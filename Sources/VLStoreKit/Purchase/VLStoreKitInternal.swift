@@ -62,10 +62,7 @@ final class VLStoreKitInternal:APIService , VLBeaconEventProtocols{
     internal var storeCountryCode:String? = nil
     internal var isFromSubscriptionFlow = false
     lazy internal var transactionDetailsCallback:((_ storeKitModel:VLStoreKitModel?, _ error:TransactionError?) -> Void)? = nil
-    
-#if DEBUG
     private let logger: OSLog = OSLog(subsystem: "com.viewlift.storekit", category: "storekit")
-#endif
     
     internal func initateTransaction(productDetails: VLProductDetails, transactionType:TransactionType = .purchase, deviceId:String? = nil, makeInternalSubscriptionCall:Bool = false, planId:String? = nil) {
         self.productDetails = productDetails
@@ -254,12 +251,10 @@ extension VLStoreKitInternal {
 extension VLStoreKitInternal {
     
     func logMessage(_ message: String) {
-#if DEBUG
         if VLStoreKit.sharedStoreKitManager.enableDebugLogs {
             os_log("%@", log: logger, type: .info, "VLStoreKit Logger")
             os_log("%@", log: logger, type: .info, message)
         }
-#endif
     }
     
 }
