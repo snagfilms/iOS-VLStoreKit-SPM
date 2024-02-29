@@ -57,7 +57,7 @@ final class VLStoreKitInternal:APIService , VLBeaconEventProtocols{
     internal var makeInternalSubscriptionCall:Bool = false
     typealias subscriptionSyncCallbackHandler = ((_ subscriptionResponse: SubscriptionSyncResponse?, _ errorCode:String?) -> Void)
     internal var subscriptionSyncCallback: subscriptionSyncCallbackHandler?
-    lazy private(set) internal var transactionalPurchaseObject:VLTransactionalObject? = nil
+    private(set) internal var transactionalPurchaseObject:VLTransactionalObject!
     lazy internal var webSocketClient:Socket? = nil
     internal var storeCountryCode:String? = nil
     internal var isFromSubscriptionFlow = false
@@ -86,13 +86,13 @@ final class VLStoreKitInternal:APIService , VLBeaconEventProtocols{
         }
     }
     
-    internal func initateTransaction(productDetails: VLProductDetails, transactionType:TransactionType = .purchase, deviceId:String? = nil, makeInternalSubscriptionCall:Bool = false, transactionalPurchaseObject:VLTransactionalObject?) {
+    internal func initateTransaction(productDetails: VLProductDetails, transactionType:TransactionType = .purchase, deviceId:String? = nil, makeInternalSubscriptionCall:Bool = false, transactionalPurchaseObject:VLTransactionalObject) {
         self.productDetails = productDetails
         self.deviceId = deviceId
         self.transactionType = transactionType
         self.makeInternalSubscriptionCall = makeInternalSubscriptionCall
         self.transactionalPurchaseObject = transactionalPurchaseObject
-        self.planDetails.planId = transactionalPurchaseObject?.planId
+        self.planDetails.planId = transactionalPurchaseObject.planId
         self.isFromSubscriptionFlow = true
         
         triggerUserBeaconEvent(eventName: .cardAdded)
@@ -214,7 +214,7 @@ final class VLStoreKitInternal:APIService , VLBeaconEventProtocols{
         let storeKitModel = VLStoreKitModel(withTransactionId: transactionId, originalTransactionId: originalTransactionId, productId: productId, transactionDate: nil, transactionEndDate: nil, transactionReceipt: transactionReceipt)
         self.planDetails.planId = planId
         self.transactionType = transactionType
-        self.transactionalPurchaseObject = transactionalPurchaseObject
+        self.transactionalPurchaseObject = transactionPurchaseObject
         self.isFromSubscriptionFlow = true
         self.syncSubscriptionStatusToVLServer(storeKitModel: storeKitModel, transactionType: transactionType)
     }

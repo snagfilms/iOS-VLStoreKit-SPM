@@ -15,6 +15,7 @@ extension VLStoreKitInternal {
         switch transactionType {
         case .purchase, .restore:
             self.updateServerWithSubscriptionStatus(storeKitModel: storeKitModel)
+            break
         case .buy, .rent:
             self.updateServerWithTransactionalPurchaseStatus(storeKitModel: storeKitModel)
         default:
@@ -58,23 +59,9 @@ extension VLStoreKitInternal {
         
     private func updateServerWithTransactionalPurchaseStatus(storeKitModel:VLStoreKitModel) {
         guard let userIdentity = self.userIdentity else { return }
-        guard let transactionalObject = self.transactionalPurchaseObject else { return }
         guard let authToken = self.authorizationToken else { return }
         
-        if webSocketClient == nil {
-            webSocketClient = Socket()
-        }
-        webSocketClient?.createWebSocket(with: authToken, socketConnectionCompletionHandler: { (_) in
-            self.webSocketClient?.resetCompletionHandler()
-            self.proceedForTransactionalPurchaseSync(storeKitModel: storeKitModel, userIdentity: userIdentity, transactionalObject: transactionalObject, authToken: authToken)
-        }, socketMessageHandler: { message in
-            if message != nil {
-                self.callTransactionalPurchaseSyncDelegate(errorCode: "COMPLETED", isSuccess: true)
-            }
-            else if self.socketSyncDelegate != nil {
-                self.socketSyncDelegate?.socketMessageHandler()
-            }
-        })
+        self.proceedForTransactionalPurchaseSync(storeKitModel: storeKitModel, userIdentity: userIdentity, transactionalObject: self.transactionalPurchaseObject, authToken: authToken)
     }
     
     private func proceedForTransactionalPurchaseSync(storeKitModel:VLStoreKitModel, userIdentity:UserIdentity, transactionalObject:VLTransactionalObject, authToken:String) {
@@ -88,23 +75,16 @@ extension VLStoreKitInternal {
         self.makeTransactionalSubscriptionAPICall(requestParams: requestParam) { [weak self] (response, isSuccess, responseCode) in
             guard let checkedSelf = self else {return}
             if response == nil || !isSuccess {
-                checkedSelf.retryCountForSubscriptionUpdate += 1
                 if let statusCode = responseCode, statusCode == 400, checkedSelf.retryCountForSubscriptionUpdate < 3 {
                     checkedSelf.proceedForTransactionalPurchaseSync(storeKitModel: storeKitModel, userIdentity: userIdentity, transactionalObject: transactionalObject, authToken: authToken)
                 }
                 else {
-                    checkedSelf.retryCountForSubscriptionUpdate = 0
-                    checkedSelf.webSocketClient = nil
-                    if let transactionData = try? JSONSerialization.data(withJSONObject: requestParam), let contentId = transactionalObject.contentId {
-                        VLDBManager.sharedInstance.addTransactionToDatabase(contentId: contentId, transactionData: transactionData)
-                    }
                     let errorCode = response?["code"] as? String ?? ""
                     checkedSelf.callTransactionalPurchaseSyncDelegate(errorCode: errorCode, isSuccess: false)
                 }
             }
             else {
-                checkedSelf.retryCountForSubscriptionUpdate = 0
-                checkedSelf.webSocketClient?.sendMessageToSocket(authToken: authToken)
+                self?.callTransactionalPurchaseSyncDelegate(errorCode: "COMPLETED", isSuccess: true)
             }
         }
     }
