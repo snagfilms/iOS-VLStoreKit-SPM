@@ -219,7 +219,7 @@ struct NetworkRequest {
 	
 	
 	private func getCURLRequest(request: URLRequest) {
-#if DEBUG
+//#if DEBUG
 		var curlString = "VLStoreKitLib CURL REQUEST:\n"
 		curlString += "curl -X \(request.httpMethod!) \\\n"
 		
@@ -240,7 +240,7 @@ struct NetworkRequest {
 		}
 		
         VLStoreKitInternal.shared.logMessage(curlString)
-#endif
+//#endif
 	}
 	
 	private func escapeQuotesInString(str:String) -> String {

@@ -84,7 +84,7 @@ extension VLStoreKitInternal {
                 }
             }
             else {
-                self?.callTransactionalPurchaseSyncDelegate(errorCode: "COMPLETED", isSuccess: true)
+                self?.callTransactionalPurchaseSyncDelegate(errorCode: "Completed", isSuccess: true)
             }
         }
     }
