@@ -112,10 +112,8 @@ extension VLStoreKitManager {
                             SKPaymentQueue.default().finishTransaction(transaction)
                             self.isProductPurchased = true
                             
-                            DispatchQueue.main.async {
-                                VLStoreKitInternal.shared.logMessage("TRANSACTION PURCHASED CALLING DELEGATE")
-                                self.getTransaction(transaction: transaction, andReceiptData: receiptData)
-                            }
+                            VLStoreKitInternal.shared.logMessage("TRANSACTION PURCHASED CALLING DELEGATE")
+                            self.getTransaction(transaction: transaction, andReceiptData: receiptData)
                         }
                         else {
                             SKPaymentQueue.default().finishTransaction(transaction)
