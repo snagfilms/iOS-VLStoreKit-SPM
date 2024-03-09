@@ -255,6 +255,6 @@ enum APIUrl:String {
     case validateIOSReceiptEndPoint = "/subscription/ios/validate_ios_receipt"
     
     static func getAPIBaseUrl() -> String {
-        return VLStoreKitInternal.shared.apiUrl ?? ""
+        return VLStoreKitInternal.shared.apiBaseUrl ?? ""
     }
 }

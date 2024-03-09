@@ -20,7 +20,7 @@ final class VLStoreKitInternal:APIService , VLBeaconEventProtocols{
     
     static public let shared:VLStoreKitInternal = {
         let instance = VLStoreKitInternal()
-        instance.setupConfiguration()
+//        instance.setupConfiguration()
         return instance
     }()
     
@@ -40,8 +40,8 @@ final class VLStoreKitInternal:APIService , VLBeaconEventProtocols{
     
     private let bundleIdentifier = "com.viewlift.vlstorekit"
     internal var supportedAPIVersion:VLStoreKit.APIVersion = .V1
-    internal var apiUrl:String?
     internal var apiKey:String?
+    internal var apiBaseUrl:String?
     internal var productDetails:VLProductDetails?
     internal var userIdentity:UserIdentity?
     lazy internal var planDetails:PlanDetails = PlanDetails()
@@ -222,30 +222,30 @@ final class VLStoreKitInternal:APIService , VLBeaconEventProtocols{
 
 extension VLStoreKitInternal {
     
-    public func setupConfiguration() {
-        if (self.apiUrl ?? "").isEmpty {
-            self.apiUrl = self.getBaseUrl()
-        }
-    }
+//    public func setupConfiguration() {
+//        if (self.apiUrl ?? "").isEmpty {
+//            self.apiUrl = self.getBaseUrl()
+//        }
+//    }
     
-    private func getBaseUrl() -> String? {
-        guard let bundlePath = Bundle.main.path(forResource: "SiteConfig", ofType: "plist") else {
-            assertionFailure("Failed to find SiteConfig.plist in the main bundle.")
-            return nil
-        }
-        
-        guard let dict = NSDictionary(contentsOfFile: bundlePath) else {
-            assertionFailure("Failed to create NSDictionary from SiteConfig.plist.")
-            return nil
-        }
-        
-        guard let apiEndpoint = dict["APIEndPoint"] as? String else {
-            assertionFailure("APIEndPoint key not found or is not a String in SiteConfig.plist.")
-            return nil
-        }
-        
-        return apiEndpoint
-    }
+//    private func getBaseUrl() -> String? {
+//        guard let bundlePath = Bundle.main.path(forResource: "SiteConfig", ofType: "plist") else {
+//            assertionFailure("Failed to find SiteConfig.plist in the main bundle.")
+//            return nil
+//        }
+//        
+//        guard let dict = NSDictionary(contentsOfFile: bundlePath) else {
+//            assertionFailure("Failed to create NSDictionary from SiteConfig.plist.")
+//            return nil
+//        }
+//        
+//        guard let apiEndpoint = dict["APIEndPoint"] as? String else {
+//            assertionFailure("APIEndPoint key not found or is not a String in SiteConfig.plist.")
+//            return nil
+//        }
+//        
+//        return apiEndpoint
+//    }
 }
 
 extension VLStoreKitInternal {

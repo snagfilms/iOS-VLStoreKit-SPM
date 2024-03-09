@@ -12,9 +12,10 @@ final public class VLStoreKit:NSObject {
         return instance
     }()
     
-    public init(withAPIVersion apiVersion:APIVersion = .V1, beacon: VLBeacon? = nil)
+    public init(withAPIVersion apiVersion:APIVersion = .V1, beacon: VLBeacon? = nil, apiBaseUrl: String? = nil)
     {
         self.setAPIVersion = apiVersion
+        self.setAPIBaseUrl = apiBaseUrl
         
         VLStoreKitBeaconHelper.setUpBecaonInstance(sharedBeaconInstance: beacon)
         super.init()
@@ -57,6 +58,12 @@ final public class VLStoreKit:NSObject {
     public var setAPIVersion:APIVersion = .V1 {
         didSet {
             VLStoreKitInternal.shared.supportedAPIVersion = setAPIVersion
+        }
+    }
+    
+    public var setAPIBaseUrl:String? = "" {
+        didSet {
+            VLStoreKitInternal.shared.apiBaseUrl = setAPIBaseUrl
         }
     }
     
@@ -256,11 +263,11 @@ final public class VLStoreKit:NSObject {
      - authorizationToken: Token provided from Viewlift Dashboard
      */
     public static func setupConfig(apiKey:String, authorizationToken:String, apiBaseUrl: String? = nil) {
-        VLStoreKitInternal.shared.apiUrl = apiBaseUrl
         VLStoreKitInternal.shared.apiKey = apiKey
+        VLStoreKitInternal.shared.apiBaseUrl = apiBaseUrl
         VLStoreKitInternal.shared.authorizationToken = authorizationToken
         
-        VLStoreKitInternal.shared.setupConfiguration()
+//        VLStoreKitInternal.shared.setupConfiguration()
     }
     
     /**
