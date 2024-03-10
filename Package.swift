@@ -16,7 +16,7 @@ let package = Package(
             targets: ["VLStoreKit"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/snagfilms/iOS-VLBeacon-SPM.git", branch: "main"),
+        .package(url: "https://github.com/snagfilms/iOS-VLBeacon-SPM.git", branch: "develop_siteconfig"),
         .package(url: "https://github.com/socketio/socket.io-client-swift.git", branch: "master")
     ],
     targets: [

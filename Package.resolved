@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/snagfilms/iOS-VLBeacon-SPM.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "f1eade0fd654005af5d5707325043f4bd41c5cc3"
+        "branch" : "develop_siteconfig",
+        "revision" : "c71cb45b6943b1804061cbb566f51f6ecb8ca33c"
       }
     },
     {
