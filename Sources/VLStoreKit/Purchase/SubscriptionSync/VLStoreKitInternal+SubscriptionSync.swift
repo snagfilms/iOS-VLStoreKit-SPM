@@ -75,15 +75,18 @@ extension VLStoreKitInternal {
         self.makeTransactionalSubscriptionAPICall(requestParams: requestParam) { [weak self] (response, isSuccess, responseCode) in
             guard let checkedSelf = self else {return}
             if response == nil || !isSuccess {
+                checkedSelf.retryCountForSubscriptionUpdate += 1
                 if let statusCode = responseCode, statusCode == 400, checkedSelf.retryCountForSubscriptionUpdate < 3 {
                     checkedSelf.proceedForTransactionalPurchaseSync(storeKitModel: storeKitModel, userIdentity: userIdentity, transactionalObject: transactionalObject, authToken: authToken)
                 }
                 else {
+                    checkedSelf.retryCountForSubscriptionUpdate = 0
                     let errorCode = response?["code"] as? String ?? ""
                     checkedSelf.callTransactionalPurchaseSyncDelegate(errorCode: errorCode, isSuccess: false)
                 }
             }
             else {
+                checkedSelf.retryCountForSubscriptionUpdate = 0
                 self?.callTransactionalPurchaseSyncDelegate(errorCode: "Completed", isSuccess: true)
             }
         }
